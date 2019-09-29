@@ -4,6 +4,7 @@ import os
 import time
 import shutil
 import cv2
+from config import *
 
 
 def rebuild_dir(path):
@@ -78,7 +79,7 @@ def get_features(img, processor_list=[]):
     return features
 
 
-def simple_data_loader(data_dir, processor_list=[]):
+def simple_dataloader(data_dir, processor_list=[]):
     inputs = []
     targets = []
     class_names = os.listdir(data_dir)
