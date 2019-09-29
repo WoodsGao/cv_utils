@@ -35,6 +35,7 @@ class Resize:
         if img is None:
             return img
         img = cv2.resize(img, self.size)
+        return img
 
 
 class PerspectiveProject:
@@ -57,13 +58,14 @@ class PerspectiveProject:
         else:
             size = self.size
 
-        img = cv2.warpPerspective(img, self.project_matrix, size)
+        img = cv2.warpPerspective(img.copy(), self.project_matrix, size)
+        return img
 
 
 class ComputeHog:
 
     def __call__(self, img):
-        if len(img.shape > 2):
+        if len(img.shape) > 2:
             img = cv2.cvtColor(img.copy(), cv2.COLOR_BGR2GRAY)
         img = cv2.resize(img, (32, 32))
         winSize = (16, 16)
@@ -86,7 +88,7 @@ class ComputeHog:
 class SobelX:
 
     def __call__(self, img):
-        if len(img.shape > 2):
+        if len(img.shape) > 2:
             img = cv2.cvtColor(img.copy(), cv2.COLOR_BGR2GRAY)
         img = cv2.resize(img, (64, 64))
         img = cv2.Sobel(img, cv2.CV_8U, 1, 0, ksize=-1)
@@ -98,7 +100,7 @@ class SobelX:
 class SobelY:
 
     def __call__(self, img):
-        if len(img.shape > 2):
+        if len(img.shape) > 2:
             img = cv2.cvtColor(img.copy(), cv2.COLOR_BGR2GRAY)
         img = cv2.resize(img, (64, 64))
         img = cv2.Sobel(img, cv2.CV_8U, 0, 1, ksize=-1)

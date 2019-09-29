@@ -4,7 +4,7 @@ import os
 import time
 import shutil
 import cv2
-from config import *
+from .config import *
 
 
 def rebuild_dir(path):
@@ -62,7 +62,7 @@ def write_2d_list(path, objs, mode='w'):
 
 
 def normalize(data):
-    data = data.copy()
+    data = np.float32(data.copy())
     data -= np.mean(data)
     data /= np.std(data)
     return data
