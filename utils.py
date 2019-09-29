@@ -64,3 +64,14 @@ def normalize(data):
     data -= np.mean(data)
     data /= np.std(data)
     return data
+
+
+def get_features(img, processor_list=[]):
+    features = []
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    for processor in processor_list:
+        feature = processor(img.copy())
+        feature = normalize(feature).reshape(-1)
+        features.append(feature)
+    features = np.concatenate(features)
+    return features
