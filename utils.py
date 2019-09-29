@@ -75,3 +75,19 @@ def get_features(img, processor_list=[]):
         features.append(feature)
     features = np.concatenate(features)
     return features
+
+
+def simple_load_data(data_dir, processor_list=[]):
+    inputs = []
+    targets = []
+    class_names = os.listdir(data_dir)
+    for ci, class_name in enumerate(class_names):
+        c_dir = os.path.join(data_dir, class_name)
+        names = os.listdir(c_dir)
+        for name in names:
+            img = cv2.imread(os.path.join(c_dir, name))
+            inputs.append(get_features(img, processor_list))
+            targets.append(ci)
+    inputs = np.float32(inputs)
+    targets = np.int64(targets)
+    return inputs, targets
