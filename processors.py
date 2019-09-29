@@ -6,7 +6,7 @@ class CutImg:
 
     def __init__(self, cut_range):
         """裁剪图像
-        
+
         Arguments:
             cut_range {list(3*2)} -- 裁剪范围 e.g.[[0, 720], [0, 1280], [0, 3]]
         """
@@ -25,7 +25,7 @@ class Resize:
 
     def __init__(self, size):
         """调整尺寸
-        
+
         Arguments:
             size {tuple(2)} -- 图像尺寸 e.g.(320, 320)
         """
@@ -41,10 +41,10 @@ class PerspectiveProject:
 
     def __init__(self, project_matrix, size=None):
         """透视变换
-        
+
         Arguments:
             project_matrix {np.float} -- cv2.getPerspectiveTransform得来的透视变换矩阵
-        
+
         Keyword Arguments:
             size {tuple(2)} -- 透视变换后的图像尺寸 (default: {None})
         """
@@ -58,3 +58,44 @@ class PerspectiveProject:
             size = self.size
 
         img = cv2.warpPerspective(img, self.project_matrix, size)
+
+
+class ComputeHog:
+
+    def __call__(self, img):
+        img = cv2.resize(img.copy(), (32, 32))
+        winSize = (16, 16)
+        blockSize = (8, 8)
+        blockStride = (4, 4)
+        cellSize = (4, 4)
+        nbins = 9
+        derivAperture = 1
+        winSigma = -1
+        histogramNormType = 0
+        L2HysThreshold = 0.2
+        gammaCorrection = 0
+        nlevels = 64
+        hog = cv2.HOGDescriptor(winSize, blockSize, blockStride, cellSize, nbins, derivAperture,
+                                winSigma, histogramNormType, L2HysThreshold, gammaCorrection, nlevels)
+        descriptor = hog.compute(img)
+        return descriptor[:, 0]
+
+
+class SobelX:
+
+    def __call__(self, img):
+        img = cv2.resize(img.copy(), (64, 64))
+        img = cv2.Sobel(img, cv2.CV_8U, 1, 0, ksize=-1)
+        img = cv2.resize(img, (16, 16))
+        img = np.float32(img)
+        return img
+
+
+class SobelY:
+
+    def __call__(self, img):
+        img = cv2.resize(img.copy(), (64, 64))
+        img = cv2.Sobel(img, cv2.CV_8U, 0, 1, ksize=-1)
+        img = cv2.resize(img, (16, 16))
+        img = np.float32(img)
+        return img

@@ -57,3 +57,10 @@ def write_2d_list(path, objs, mode='w'):
         for obj in objs:
             f.write(' '.join([str(o) for o in obj]) + '\n')
     return True
+
+
+def normalize(data):
+    data = data.copy()
+    data -= np.mean(data)
+    data /= np.std(data)
+    return data
