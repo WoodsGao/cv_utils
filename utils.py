@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import os
 import time
 import shutil
+import cv2
 
 
 def rebuild_dir(path):
@@ -77,13 +78,15 @@ def get_features(img, processor_list=[]):
     return features
 
 
-def simple_load_data(data_dir, processor_list=[]):
+def simple_data_loader(data_dir, processor_list=[]):
     inputs = []
     targets = []
     class_names = os.listdir(data_dir)
     for ci, class_name in enumerate(class_names):
         c_dir = os.path.join(data_dir, class_name)
         names = os.listdir(c_dir)
+        names = [name for name in names if os.path.splitext(name)[1] in IMG_EXT]
+        names.sort()
         for name in names:
             img = cv2.imread(os.path.join(c_dir, name))
             inputs.append(get_features(img, processor_list))
