@@ -63,7 +63,9 @@ class PerspectiveProject:
 class ComputeHog:
 
     def __call__(self, img):
-        img = cv2.resize(img.copy(), (32, 32))
+        if len(img.shape > 2):
+            img = cv2.cvtColor(img.copy(), cv2.COLOR_BGR2GRAY)
+        img = cv2.resize(img, (32, 32))
         winSize = (16, 16)
         blockSize = (8, 8)
         blockStride = (4, 4)
@@ -84,7 +86,9 @@ class ComputeHog:
 class SobelX:
 
     def __call__(self, img):
-        img = cv2.resize(img.copy(), (64, 64))
+        if len(img.shape > 2):
+            img = cv2.cvtColor(img.copy(), cv2.COLOR_BGR2GRAY)
+        img = cv2.resize(img, (64, 64))
         img = cv2.Sobel(img, cv2.CV_8U, 1, 0, ksize=-1)
         img = cv2.resize(img, (16, 16))
         img = np.float32(img)
@@ -94,7 +98,9 @@ class SobelX:
 class SobelY:
 
     def __call__(self, img):
-        img = cv2.resize(img.copy(), (64, 64))
+        if len(img.shape > 2):
+            img = cv2.cvtColor(img.copy(), cv2.COLOR_BGR2GRAY)
+        img = cv2.resize(img, (64, 64))
         img = cv2.Sobel(img, cv2.CV_8U, 0, 1, ksize=-1)
         img = cv2.resize(img, (16, 16))
         img = np.float32(img)
