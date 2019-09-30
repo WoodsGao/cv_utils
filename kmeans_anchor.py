@@ -2,7 +2,7 @@ from sklearn.cluster import KMeans
 import os
 import numpy as np
 from tqdm import tqdm
-from utils import *
+from utils import read_2d_list
 
 
 def kmeans_anchor(label_dir, n_clusters=9, img_height=320):

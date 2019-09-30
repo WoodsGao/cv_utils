@@ -1,8 +1,8 @@
 import os
 import cv2
-from utils import *
-from config import *
-from processors import *
+from utils import rebuild_dir
+from config import IMG_EXT
+from processors import CutImg
 from tqdm import tqdm
 
 
@@ -34,11 +34,14 @@ def process_img(img_dir, output_dir, processors=[]):
 
         if img is None:
             continue
-        cv2.imwrite(os.path.join(
-            output_dir, os.path.splitext(name)[0]+'.png'), img)
+        cv2.imwrite(
+            os.path.join(output_dir,
+                         os.path.splitext(name)[0] + '.png'), img)
     return 0
 
+
 if __name__ == "__main__":
-    process_img('/home/uisee/Datasets/20190715/20190715_100027_backupdata/log/dump_images/image_capturer_0',
-                '/home/uisee/Datasets/20190715/20190715_100027_backupdata/log/dump_images/mono',
-                processors=[CutImg([[0, 720], [0, 1280], [0, 3]])])
+    process_img(
+        '/home/uisee/Datasets/20190715/20190715_100027_backupdata/log/dump_images/image_capturer_0',
+        '/home/uisee/Datasets/20190715/20190715_100027_backupdata/log/dump_images/mono',
+        processors=[CutImg([[0, 720], [0, 1280], [0, 3]])])

@@ -2,7 +2,6 @@ import os
 import cv2
 import numpy as np
 
-
 src = np.float32([[573, 429], [676, 429], [301, 720], [958, 720]])
 dst = np.float32([[390, 462], [520, 462], [390, 832], [520, 832]])
 p_matrix = cv2.getPerspectiveTransform(src, dst)

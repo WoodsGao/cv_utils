@@ -1,8 +1,9 @@
 import numpy as np
 import os
 import shutil
-from utils import *
-from config import *
+# from utils import *
+from config import IMG_EXT
+import random
 
 
 def balance_yolo_data(data_dir, max_rate=1000.):
@@ -23,7 +24,8 @@ def balance_yolo_data(data_dir, max_rate=1000.):
     # 各文件复制数量, 默认为1
     file_dist = np.ones(len(names))
     for ni, name in enumerate(names):
-        with open(os.path.join(label_dir, os.path.splitext(name)[0]+'.txt'), 'r') as f:
+        with open(os.path.join(label_dir,
+                               os.path.splitext(name)[0] + '.txt'), 'r') as f:
             lines = f.read().split('\n')
             for line in lines:
                 if line == '':
@@ -63,11 +65,40 @@ def balance_yolo_data(data_dir, max_rate=1000.):
     # final_dist = np.dot(file_dist, labels)
     for ni, name in enumerate(names):
         for ci in range(int(file_dist[ni] - 1)):
-            shutil.copy(os.path.join(label_dir, name[:-3]+'txt'),
-                        os.path.join(label_dir, str(ci)+'_'+name[:-3]+'txt'))
+            shutil.copy(
+                os.path.join(label_dir, name[:-3] + 'txt'),
+                os.path.join(label_dir,
+                             str(ci) + '_' + name[:-3] + 'txt'))
             shutil.copy(os.path.join(img_dir, name),
-                        os.path.join(img_dir, str(ci)+'_'+name))
+                        os.path.join(img_dir,
+                                     str(ci) + '_' + name))
+
+
+def balance_cls_data(data_dir):
+    class_names = os.listdir(data_dir)
+    class_img_list = []
+    for class_name in class_names:
+        names = os.listdir(os.path.join(data_dir, class_name))
+        names = [
+            name for name in names if os.path.splitext(name)[1] in IMG_EXT
+        ]
+        random.shuffle(names)
+        class_img_list.append(names)
+    max_len = max([len(c) for c in class_img_list])
+    for class_i, class_img in enumerate(class_img_list):
+        if len(class_img) == 0:
+            continue
+        copy_list = []
+        copy_times = max_len // len(class_img) + 1
+        for t in range(copy_times):
+            copy_list += [[img, 'copy_{}_'.format(t) + img]
+                          for img in class_img]
+        copy_list = copy_list[:max_len - len(class_img)]
+        for copy_item in copy_list:
+            shutil.copy(
+                os.path.join(data_dir, class_names[class_i], copy_item[0]),
+                os.path.join(data_dir, class_names[class_i], copy_item[1]))
 
 
 if __name__ == "__main__":
-    balance_yolo_data('/home/uisee/Datasets/mark-small-2classes')
+    balance_cls_data('/home/uisee/Datasets/road_mark/train')

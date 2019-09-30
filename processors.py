@@ -3,7 +3,6 @@ import numpy as np
 
 
 class CutImg:
-
     def __init__(self, cut_range):
         """裁剪图像
 
@@ -15,14 +14,13 @@ class CutImg:
     def __call__(self, img):
         if img is None:
             return img
-        img = img[self.cut_range[0][0]:self.cut_range[0][1],
-                  self.cut_range[1][0]:self.cut_range[1][1],
-                  self.cut_range[2][0]:self.cut_range[2][1]]
+        img = img[self.cut_range[0][0]:self.cut_range[0][1], self.
+                  cut_range[1][0]:self.cut_range[1][1], self.
+                  cut_range[2][0]:self.cut_range[2][1]]
         return img
 
 
 class Resize:
-
     def __init__(self, size):
         """调整尺寸
 
@@ -38,7 +36,6 @@ class Resize:
 
 
 class PerspectiveProject:
-
     def __init__(self, project_matrix, size=None):
         """透视变换
 
@@ -61,7 +58,6 @@ class PerspectiveProject:
 
 
 class ComputeHog:
-
     def __call__(self, img):
         if len(img.shape > 2):
             img = cv2.cvtColor(img.copy(), cv2.COLOR_BGR2GRAY)
@@ -77,14 +73,15 @@ class ComputeHog:
         L2HysThreshold = 0.2
         gammaCorrection = 0
         nlevels = 64
-        hog = cv2.HOGDescriptor(winSize, blockSize, blockStride, cellSize, nbins, derivAperture,
-                                winSigma, histogramNormType, L2HysThreshold, gammaCorrection, nlevels)
+        hog = cv2.HOGDescriptor(winSize, blockSize, blockStride, cellSize,
+                                nbins, derivAperture, winSigma,
+                                histogramNormType, L2HysThreshold,
+                                gammaCorrection, nlevels)
         descriptor = hog.compute(img)
         return descriptor[:, 0]
 
 
 class SobelX:
-
     def __call__(self, img):
         if len(img.shape > 2):
             img = cv2.cvtColor(img.copy(), cv2.COLOR_BGR2GRAY)
@@ -96,7 +93,6 @@ class SobelX:
 
 
 class SobelY:
-
     def __call__(self, img):
         if len(img.shape > 2):
             img = cv2.cvtColor(img.copy(), cv2.COLOR_BGR2GRAY)

@@ -1,6 +1,7 @@
 import os
 import random
-from config import *
+from config import IMG_EXT
+
 
 def generate_yolo_train_valid_txt(data_dir, train_rate=0.7, shuffle=True):
     """根据数据文件夹中的images生成yolov3所需要的train.txt和valid.txt
@@ -18,12 +19,12 @@ def generate_yolo_train_valid_txt(data_dir, train_rate=0.7, shuffle=True):
     names.sort()
     if shuffle:
         random.shuffle(names)
-    names = [os.path.join(img_dir,name) for name in names]
+    names = [os.path.join(img_dir, name) for name in names]
     names = [os.path.abspath(name) for name in names]
     with open(os.path.join(data_dir, 'train.txt'), 'w') as f:
-        f.write('\n'.join(names[:int(train_rate*len(names))]))
+        f.write('\n'.join(names[:int(train_rate * len(names))]))
     with open(os.path.join(data_dir, 'valid.txt'), 'w') as f:
-        f.write('\n'.join(names[int(train_rate*len(names)):]))
+        f.write('\n'.join(names[int(train_rate * len(names)):]))
 
 
 if __name__ == "__main__":

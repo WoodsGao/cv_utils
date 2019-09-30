@@ -1,10 +1,7 @@
-import numpy as np
-import matplotlib.pyplot as plt
 import os
 import time
 import shutil
-import cv2
-from config import *
+import numpy as np
 
 
 def rebuild_dir(path):
@@ -66,32 +63,3 @@ def normalize(data):
     data -= np.mean(data)
     data /= np.std(data)
     return data
-
-
-def get_features(img, processor_list=[]):
-    features = []
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    for processor in processor_list:
-        feature = processor(img.copy())
-        feature = normalize(feature).reshape(-1)
-        features.append(feature)
-    features = np.concatenate(features)
-    return features
-
-
-def simple_dataloader(data_dir, processor_list=[]):
-    inputs = []
-    targets = []
-    class_names = os.listdir(data_dir)
-    for ci, class_name in enumerate(class_names):
-        c_dir = os.path.join(data_dir, class_name)
-        names = os.listdir(c_dir)
-        names = [name for name in names if os.path.splitext(name)[1] in IMG_EXT]
-        names.sort()
-        for name in names:
-            img = cv2.imread(os.path.join(c_dir, name))
-            inputs.append(get_features(img, processor_list))
-            targets.append(ci)
-    inputs = np.float32(inputs)
-    targets = np.int64(targets)
-    return inputs, targets
