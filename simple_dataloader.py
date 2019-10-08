@@ -3,17 +3,17 @@ import os
 import cv2
 import numpy as np
 from .utils import normalize
-from processors import Resize
+from .processors import Resize
 
 
 def get_features(img, processor_list=[], linear=True):
     features = []
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     if len(processor_list) == 1:
         if processor_list[0].__class__ == Resize:
             img = processor_list[0](img)
             img = normalize(img)
             return img
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     for processor in processor_list:
         feature = processor(img.copy())
         feature = normalize(feature)
