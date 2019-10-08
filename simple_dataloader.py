@@ -3,22 +3,27 @@ import os
 import cv2
 import numpy as np
 from utils import normalize
+from processors import Resize
 
 
 def get_features(img, processor_list=[], linear=True):
     features = []
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    if len(processor_list) == 1:
+        if processor_list[0].__class__ == Resize:
+            img = processor_list[0](img)
+            img = normalize(img)
+            return img
     for processor in processor_list:
         feature = processor(img.copy())
         feature = normalize(feature)
-        if linear:
-            feature = feature.reshape(-1)
+        feature = feature.reshape(-1)
         features.append(feature)
     features = np.concatenate(features)
     return features
 
 
-def simple_dataloader(data_dir, processor_list=[], linear=True):
+def simple_dataloader(data_dir, processor_list=[]):
     inputs = []
     targets = []
     class_names = os.listdir(data_dir)
@@ -31,7 +36,7 @@ def simple_dataloader(data_dir, processor_list=[], linear=True):
         names.sort()
         for name in names:
             img = cv2.imread(os.path.join(c_dir, name))
-            inputs.append(get_features(img, processor_list, linear))
+            inputs.append(get_features(img, processor_list))
             targets.append(ci)
     inputs = np.float32(inputs)
     targets = np.int64(targets)
