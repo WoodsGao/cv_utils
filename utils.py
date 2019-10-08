@@ -1,12 +1,7 @@
 import os
 import time
 import shutil
-<<<<<<< HEAD
 import numpy as np
-=======
-import cv2
-from .config import *
->>>>>>> 009f775976b32cfba168ec9e6272df7db56e5843
 
 
 def rebuild_dir(path):
