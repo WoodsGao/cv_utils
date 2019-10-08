@@ -1,6 +1,6 @@
 import os
 import cv2
-from config import IMG_EXT
+from .config import IMG_EXT
 from tqdm import tqdm
 
 

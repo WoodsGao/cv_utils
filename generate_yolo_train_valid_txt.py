@@ -1,6 +1,6 @@
 import os
 import random
-from config import IMG_EXT
+from .config import IMG_EXT
 
 
 def generate_yolo_train_valid_txt(data_dir, train_rate=0.7, shuffle=True):

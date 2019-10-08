@@ -1,8 +1,8 @@
 import numpy as np
 import os
 import shutil
-# from utils import *
-from config import IMG_EXT
+# from .utils import *
+from .config import IMG_EXT
 import random
 
 

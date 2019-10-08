@@ -1,6 +1,6 @@
 import os
 import cv2
-from config import VIDEO_EXT
+from .config import VIDEO_EXT
 
 
 def videos_merge(video_dir, fps, size):

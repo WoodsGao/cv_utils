@@ -1,8 +1,8 @@
-from config import IMG_EXT
+from .config import IMG_EXT
 import os
 import cv2
 import numpy as np
-from utils import normalize
+from .utils import normalize
 from processors import Resize
 
 

@@ -3,7 +3,7 @@ import cv2
 from tqdm import tqdm
 from augments import PerspectiveProject, HSV_S, HSV_H, HSV_V
 from augments import Rotate, Blur, Noise
-from config import IMG_EXT
+from .config import IMG_EXT
 
 
 def cls_generator(data_dir, augment_list=[]):

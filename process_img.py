@@ -1,7 +1,7 @@
 import os
 import cv2
-from utils import rebuild_dir
-from config import IMG_EXT
+from .utils import rebuild_dir
+from .config import IMG_EXT
 from processors import CutImg
 from tqdm import tqdm
 

@@ -1,6 +1,6 @@
 import os
 import cv2
-from utils import rebuild_dir
+from .utils import rebuild_dir
 
 
 def video2img(video_path, rate=0.):
