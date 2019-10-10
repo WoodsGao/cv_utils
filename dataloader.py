@@ -29,13 +29,15 @@ class ClassifyDataloader(object):
                 len(os.listdir(os.path.join(path, c))) for c in self.classes
             ]
             max_weight = max(weights)
-        for i_c, c in enumerate(self.classes):
+        for ci, c in enumerate(self.classes):
             names = os.listdir(os.path.join(path, c))
             if balance:
                 names *= (max_weight // len(names)) + 1
                 names = names[:max_weight]
             for name in names:
-                self.data_list.append([os.path.join(path, c, name), i_c])
+                target = np.zeros(len(self.classes))
+                target[ci] = 1
+                self.data_list.append([os.path.join(path, c, name), target])
         self.iter_times = len(self.data_list) // self.batch_size + 1
         self.max_len = 50
         self.queue = []
