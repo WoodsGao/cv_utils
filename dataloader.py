@@ -7,13 +7,13 @@ import time
 # from queue import Queue
 
 
-class ClsDataloader(object):
+class ClassifyDataloader(object):
     def __init__(self,
                  path,
                  img_size=224,
                  batch_size=8,
                  augments=[],
-                 balance=True,
+                 balance=False,
                  multi_scale=False):
         self.path = path
         self.img_size = img_size
@@ -55,11 +55,7 @@ class ClsDataloader(object):
             img, _, __ = aug(img)
             # cv2.imshow('img', img)
             # cv2.waitKey(0)
-        img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB
-        img = np.ascontiguousarray(img, dtype=np.float32)  # uint8 to float32
-        # img /= 255.0  # 0 - 255 to 0.0 - 1.0
-        img -= np.mean(img)
-        img /= np.std(img)
+
         return img
 
     def run(self):

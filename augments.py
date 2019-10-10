@@ -189,3 +189,27 @@ class Noise:
         y = np.random.randint(0, img.shape[1], amount)
         img[x, y] = [255, 255, 255]
         return img, det, seg
+
+
+class Normalize:
+    def __call__(self, img, det=None, seg=None):
+        img = np.float32(img)
+        img -= np.mean(img)
+        img /= np.std(img)
+        return img, det, seg
+
+
+class BGR2RGB:
+    def __call__(self, img, det=None, seg=None):
+        img = img[:, :, ::-1]
+        img = np.ascontiguousarray(img)
+        return img, det, seg
+
+
+class NHWC2NCHW:
+    def __call__(self, img, det=None, seg=None):
+        img = img.transpose(2, 0, 1)
+        img = np.ascontiguousarray(img)
+        seg = seg.transpose(2, 0, 1)
+        seg = np.ascontiguousarray(seg)
+        return img, det, seg
