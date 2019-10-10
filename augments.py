@@ -210,6 +210,7 @@ class NHWC2NCHW:
     def __call__(self, img, det=None, seg=None):
         img = img.transpose(2, 0, 1)
         img = np.ascontiguousarray(img)
-        seg = seg.transpose(2, 0, 1)
-        seg = np.ascontiguousarray(seg)
+        if seg is not None:
+            seg = seg.transpose(2, 0, 1)
+            seg = np.ascontiguousarray(seg)
         return img, det, seg
