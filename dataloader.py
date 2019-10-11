@@ -38,7 +38,7 @@ class ClassifyDataloader(object):
                 target = np.zeros(len(self.classes))
                 target[ci] = 1
                 self.data_list.append([os.path.join(path, c, name), target])
-        self.iter_times = len(self.data_list) // self.batch_size + 1
+        self.iter_times = (len(self.data_list) - 1) // self.batch_size + 1
         self.max_len = 50
         self.queue = []
         self.scale = img_size
@@ -65,8 +65,7 @@ class ClassifyDataloader(object):
             while len(self.batch_list) > self.max_len:
                 time.sleep(0.1)
             if len(self.queue) == 0:
-                random.shuffle(self.data_list)
-                self.queue = self.data_list
+                self.refresh()
 
             if self.multi_scale:
                 self.scale = random.randint(min(self.img_size // 40, 1),
@@ -82,7 +81,6 @@ class ClassifyDataloader(object):
     def next(self):
         while len(self.batch_list) == 0:
             time.sleep(0.1)
-        batch = self.batch_list[0]
-        self.batch_list = self.batch_list[1:]
+        batch = self.batch_list.pop(0)
 
         return batch[0], batch[1]
