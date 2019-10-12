@@ -4,6 +4,7 @@ import os
 import random
 from threading import Thread
 import time
+from copy import deepcopy
 # from queue import Queue
 
 
@@ -65,7 +66,8 @@ class ClassifyDataloader(object):
             while len(self.batch_list) > self.max_len:
                 time.sleep(0.1)
             if len(self.queue) == 0:
-                self.refresh()
+                self.queue = deepcopy(self.data_list)
+                random.shuffle(self.queue)
 
             if self.multi_scale:
                 self.scale = random.randint(min(self.img_size // 40, 1),
