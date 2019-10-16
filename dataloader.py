@@ -5,6 +5,7 @@ import random
 from threading import Thread
 import time
 from copy import deepcopy
+from .config import IMG_EXT
 
 
 class Dataloader:
@@ -72,6 +73,9 @@ class ClassifyDataloader(Dataloader):
         self.classes.sort()
         for ci, c in enumerate(self.classes):
             names = os.listdir(os.path.join(self.data_dir, c))
+            names = [
+                name for name in names if os.path.splitext(name)[1] in IMG_EXT
+            ]
             for name in names:
                 target = np.zeros(len(self.classes))
                 target[ci] = 1
@@ -86,4 +90,35 @@ class ClassifyDataloader(Dataloader):
         return img, message[1]
 
 
-# class SegmentDataloader:
+class SegmentDataloader(Dataloader):
+    def build_data_list(self):
+        with open(os.path.join(self.data_dir, 'classes.csv'), 'r') as f:
+            lines = [l.split(',') for l in f.readlines()]
+            lines = [[l[0], np.uint8(l[1:])] for l in lines if len(l) == 4]
+            self.classes = lines
+        image_dir = os.path.join(self.data_dir, 'images')
+        label_dir = os.path.join(self.data_dir, 'labels')
+        names = os.listdir(image_dir)
+        names = [
+            name for name in names if os.path.splitext(name)[1] in IMG_EXT
+        ]
+        for name in names:
+            if os.path.exists(os.path.join(label_dir, names)):
+                self.data_dir.append([
+                    os.path.join(image_dir, names),
+                    os.path.join(label_dir, names)
+                ])
+
+    def worker(self, message):
+        img = cv2.imread(message[0])
+        img = cv2.resize(img, (self.img_size, self.img_size))
+        seg_rgb = cv2.imread(message[1])
+        seg = np.zeros([seg_rgb.shape[0], seg_rgb.shape[1], self.classes])
+        for ci, c in enumerate(self.classes):
+            seg[(seg_rgb == c[1]).all(2), ci] = 1
+        seg = cv2.resize(seg, (self.img_size, self.img_size))
+        for aug in self.augments:
+            img, _, seg = aug(img)
+        seg[seg > 0.5] = 1
+        seg[seg < 1] = 0
+        return img, seg
