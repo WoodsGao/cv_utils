@@ -92,7 +92,7 @@ class ClassifyDataloader(Dataloader):
 
 class SegmentDataloader(Dataloader):
     def build_data_list(self):
-        with open(os.path.join(self.data_dir, 'classes.csv'), 'r') as f:
+        with open(os.path.join(self.data_dir, 'labels', 'classes.csv'), 'r') as f:
             lines = [l.split(',') for l in f.readlines()]
             lines = [[l[0], np.uint8(l[1:])] for l in lines if len(l) == 4]
             self.classes = lines
