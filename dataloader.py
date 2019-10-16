@@ -5,45 +5,33 @@ import random
 from threading import Thread
 import time
 from copy import deepcopy
-# from queue import Queue
 
 
-class ClassifyDataloader(object):
+class Dataloader:
     def __init__(self,
-                 path,
+                 data_dir,
                  img_size=224,
                  batch_size=8,
                  augments=[],
-                 balance=False,
-                 multi_scale=False):
-        self.path = path
+                 max_len=50):
+        self.data_dir = data_dir
         self.img_size = img_size
         self.batch_size = batch_size
         self.augments = augments
-        self.multi_scale = multi_scale
-        self.classes = os.listdir(path)
-        self.classes.sort()
         self.data_list = list()
-
-        if balance:
-            weights = [
-                len(os.listdir(os.path.join(path, c))) for c in self.classes
-            ]
-            max_weight = max(weights)
-        for ci, c in enumerate(self.classes):
-            names = os.listdir(os.path.join(path, c))
-            if balance:
-                names *= (max_weight // len(names)) + 1
-                names = names[:max_weight]
-            for name in names:
-                target = np.zeros(len(self.classes))
-                target[ci] = 1
-                self.data_list.append([os.path.join(path, c, name), target])
-        self.iter_times = (len(self.data_list) - 1) // self.batch_size + 1
-        self.max_len = 50
+        self.max_len = max_len
         self.queue = []
-        self.scale = img_size
         self.batch_list = []
+        self.iter_times = 0
+        self.classes = []
+        self.build_data_list()
+        self.iter_times = (len(self.data_list) - 1) // self.batch_size + 1
+        self.run_thread()
+
+    def build_data_list(self):
+        pass
+
+    def run_thread(self):
         t = Thread(target=self.run)
         t.setDaemon(True)
         t.start()
@@ -51,15 +39,8 @@ class ClassifyDataloader(object):
     def __iter__(self):
         return self
 
-    def worker(self, path):
-        img = cv2.imread(path)
-        img = cv2.resize(img, (self.scale, self.scale))
-        for aug in self.augments:
-            img, _, __ = aug(img)
-            # cv2.imshow('img', img)
-            # cv2.waitKey(0)
-
-        return img
+    def worker(self, message):
+        return False, False
 
     def run(self):
         while True:
@@ -68,21 +49,41 @@ class ClassifyDataloader(object):
             if len(self.queue) == 0:
                 self.queue = deepcopy(self.data_list)
                 random.shuffle(self.queue)
-
-            if self.multi_scale:
-                self.scale = random.randint(min(self.img_size // 40, 1),
-                                            self.img_size // 20) * 32
-                # print(self.scale)
             its = self.queue[:self.batch_size]
             self.queue = self.queue[self.batch_size:]
-            imgs = [self.worker(it[0]) for it in its]
-            self.batch_list.append(
-                [np.float32(imgs),
-                 np.int64([it[1] for it in its])])
+            imgs = []
+            labels = []
+            for it in its:
+                message = self.worker(it)
+                imgs.append(message[0])
+                labels.append(message[1])
+            self.batch_list.append([np.float32(imgs), np.float32(labels)])
 
     def next(self):
         while len(self.batch_list) == 0:
             time.sleep(0.1)
         batch = self.batch_list.pop(0)
-
         return batch[0], batch[1]
+
+
+class ClassifyDataloader(Dataloader):
+    def build_data_list(self):
+        self.classes = os.listdir(self.data_dir)
+        self.classes.sort()
+        for ci, c in enumerate(self.classes):
+            names = os.listdir(os.path.join(self.data_dir, c))
+            for name in names:
+                target = np.zeros(len(self.classes))
+                target[ci] = 1
+                self.data_list.append(
+                    [os.path.join(self.data_dir, c, name), target])
+
+    def worker(self, message):
+        img = cv2.imread(message[0])
+        img = cv2.resize(img, (self.img_size, self.img_size))
+        for aug in self.augments:
+            img, _, __ = aug(img)
+        return img, message[1]
+
+
+# class SegmentDataloader:
