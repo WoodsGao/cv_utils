@@ -9,14 +9,14 @@ from copy import deepcopy
 
 class Dataloader:
     def __init__(self,
-                 data_dir,
+                 path,
                  img_size=224,
                  batch_size=8,
                  augments=[],
                  max_len=50, 
                  *args,
                  **kargs):
-        self.data_dir = data_dir
+        self.path = path
         self.img_size = img_size
         self.batch_size = batch_size
         self.augments = augments
