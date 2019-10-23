@@ -57,7 +57,7 @@ class Dataloader:
                 random.shuffle(self.queue)
 
             # multi scale (0.5x - 1.5x)
-            if self.multi_scale:
+            if self.multi_scale and random.random() > 0.5:
                 scale = int(random.uniform(self.img_size // 64, self.img_size // 21))
                 scale = scale if scale > 0 else 1
                 scale *= 32
