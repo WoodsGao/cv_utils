@@ -14,7 +14,7 @@ class Dataloader:
                  batch_size=8,
                  augments=[],
                  max_len=50, 
-                 multi_scale=True,
+                 multi_scale=False,
                  *args,
                  **kargs):
         self.path = path
