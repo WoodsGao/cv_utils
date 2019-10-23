@@ -62,7 +62,7 @@ class Dataloader:
                 scale = scale if scale > 0 else 1
                 scale *= 32
             else:
-                scale = 32
+                scale = self.img_size
 
             its = self.queue[:self.batch_size]
             self.queue = self.queue[self.batch_size:]
