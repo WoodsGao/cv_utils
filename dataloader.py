@@ -14,10 +14,12 @@ class Dataloader:
                  batch_size=8,
                  augments=[],
                  max_len=50, 
+                 multi_scale=True,
                  *args,
                  **kargs):
         self.path = path
         self.img_size = img_size
+        self.multi_scale = True
         self.batch_size = batch_size
         self.augments = augments
         self.data_list = list()
@@ -43,7 +45,7 @@ class Dataloader:
     def __iter__(self):
         return self
 
-    def worker(self, message):
+    def worker(self, message, scale):
         return False, False
 
     def run(self):
@@ -53,12 +55,20 @@ class Dataloader:
             if len(self.queue) == 0:
                 self.queue = deepcopy(self.data_list)
                 random.shuffle(self.queue)
+
+            # multi scale (0.5x - 1.5x)
+            if self.multi_scale:
+                scale = int(random.uniform(self.img_size // 64, self.img_size // 21))
+                scale = scale if scale > 0 else 1
+                scale *= scale
+
+
             its = self.queue[:self.batch_size]
             self.queue = self.queue[self.batch_size:]
             imgs = []
             labels = []
             for it in its:
-                message = self.worker(it)
+                message = self.worker(it, scale=scale)
                 imgs.append(message[0])
                 labels.append(message[1])
             self.batch_list.append([np.float32(imgs), np.float32(labels)])
