@@ -61,7 +61,8 @@ class Dataloader:
                 scale = int(random.uniform(self.img_size // 64, self.img_size // 21))
                 scale = scale if scale > 0 else 1
                 scale *= scale
-
+            else:
+                scale = 1
 
             its = self.queue[:self.batch_size]
             self.queue = self.queue[self.batch_size:]
