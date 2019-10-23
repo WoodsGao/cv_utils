@@ -19,7 +19,7 @@ class Dataloader:
                  **kargs):
         self.path = path
         self.img_size = img_size
-        self.multi_scale = True
+        self.multi_scale = multi_scale
         self.batch_size = batch_size
         self.augments = augments
         self.data_list = list()
