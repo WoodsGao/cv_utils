@@ -53,8 +53,8 @@ class Dataloader:
             while len(self.batch_list) > self.max_len:
                 time.sleep(0.1)
             if len(self.queue) == 0:
+                random.shuffle(self.data_list)
                 self.queue = deepcopy(self.data_list)
-                random.shuffle(self.queue)
 
             # multi scale (0.5x - 1.5x)
             if self.multi_scale and random.random() > 0.5:
