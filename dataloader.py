@@ -3,6 +3,7 @@ import numpy as np
 import os
 import random
 from threading import Thread
+from concurrent.futures import ProcessPoolExecutor
 import time
 from copy import deepcopy
 
@@ -19,6 +20,7 @@ class Dataloader:
                  **kargs):
         self.path = path
         self.img_size = img_size
+        self.scale = img_size
         self.multi_scale = multi_scale
         self.batch_size = batch_size
         self.augments = augments
@@ -45,10 +47,11 @@ class Dataloader:
     def __iter__(self):
         return self
 
-    def worker(self, message, scale):
-        return False, False
+    def worker(self, message=None):
+        return None
 
     def run(self):
+        pool = ProcessPoolExecutor()
         while True:
             while len(self.batch_list) > self.max_len:
                 time.sleep(0.1)
@@ -58,21 +61,15 @@ class Dataloader:
 
             # multi scale (0.5x - 1.5x)
             if self.multi_scale and random.random() > 0.5:
-                scale = int(random.uniform(self.img_size // 64, self.img_size // 21))
-                scale = scale if scale > 0 else 1
-                scale *= 32
-            else:
-                scale = self.img_size
+                self.scale = int(random.uniform(self.img_size // 64, self.img_size // 21))
+                self.scale = self.scale if self.scale > 0 else 1
+                self.scale *= 32
 
             its = self.queue[:self.batch_size]
             self.queue = self.queue[self.batch_size:]
-            imgs = []
-            labels = []
-            for it in its:
-                message = self.worker(it, scale=scale)
-                imgs.append(message[0])
-                labels.append(message[1])
-            self.batch_list.append([np.float32(imgs), np.float32(labels)])
+            messages = pool.map(self.worker, its)
+            messages = [m for m in messages]
+            self.batch_list.append([np.float32([m[0] for m in messages]), np.float32([m[1] for m in messages])])
 
     def next(self):
         while len(self.batch_list) == 0:
