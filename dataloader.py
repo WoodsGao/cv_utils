@@ -3,7 +3,7 @@ import numpy as np
 import os
 import random
 from threading import Thread
-from concurrent.futures import ProcessPoolExecutor
+# from concurrent.futures import ProcessPoolExecutor
 import time
 from copy import deepcopy
 
@@ -51,7 +51,8 @@ class Dataloader:
         return None
 
     def run(self):
-        pool = ProcessPoolExecutor()
+        # TODO multi processing
+        # pool = ProcessPoolExecutor()
         while True:
             while len(self.batch_list) > self.max_len:
                 time.sleep(0.1)
@@ -67,8 +68,8 @@ class Dataloader:
 
             its = self.queue[:self.batch_size]
             self.queue = self.queue[self.batch_size:]
-            messages = pool.map(self.worker, its)
-            messages = [m for m in messages]
+            # messages = pool.map(self.worker, its)
+            messages = [self.worker(it) for it in its]
             self.batch_list.append([np.float32([m[0] for m in messages]), np.float32([m[1] for m in messages])])
 
     def next(self):
