@@ -80,9 +80,8 @@ class HSV_H:
             return img, det, seg
         img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         img = np.float32(img)
-        img[:, :, 0] *= 1 + (self.rate * random.uniform(-1, 1))
-        img[img > 255] = 255
-        img[img < 0] = 0
+        img[:, :, 0] += 255 * (self.rate * random.uniform(-1, 1))
+        img = np.clip(img, 0, 255)
         img = np.uint8(img)
         img = cv2.cvtColor(img, cv2.COLOR_HSV2BGR)
         return img, det, seg
@@ -98,9 +97,8 @@ class HSV_S:
             return img, det, seg
         img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         img = np.float32(img)
-        img[:, :, 1] *= 1 + (self.rate * random.uniform(-1, 1))
-        img[img > 255] = 255
-        img[img < 0] = 0
+        img[:, :, 1] += 255 * (self.rate * random.uniform(-1, 1))
+        img = np.clip(img, 0, 255)
         img = np.uint8(img)
         img = cv2.cvtColor(img, cv2.COLOR_HSV2BGR)
         return img, det, seg
@@ -116,9 +114,8 @@ class HSV_V:
             return img, det, seg
         img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         img = np.float32(img)
-        img[:, :, 2] *= 1 + (self.rate * random.uniform(-1, 1))
-        img[img > 255] = 255
-        img[img < 0] = 0
+        img[:, :, 2] += 255 * (self.rate * random.uniform(-1, 1))
+        img = np.clip(img, 0, 255)
         img = np.uint8(img)
         img = cv2.cvtColor(img, cv2.COLOR_HSV2BGR)
         return img, det, seg
