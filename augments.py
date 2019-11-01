@@ -194,8 +194,7 @@ class Noise:
 class Normalize:
     def __call__(self, img, det=None, seg=None):
         img = np.float32(img)
-        img -= np.mean(img)
-        img /= np.std(img)
+        img /= 255.
         return img, det, seg
 
 
