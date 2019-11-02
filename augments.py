@@ -160,10 +160,10 @@ class Blur:
         if random.random() > self.p:
             return img, det, seg
         rate = self.rate * random.random()
-        ksize = (int(
-            (rate * img.shape[0]) // 2) * 2 + 1, int(
-                (rate * img.shape[1]) // 2) * 2 + 1)
-        img = cv2.blur(img, ksize)
+        ksize = rate * img.shape[0]
+        ksize = ksize // 2
+        ksize = 2 * ksize + 1
+        img = cv2.blur(img, (ksize, ksize))
         return img, det, seg
 
 
@@ -175,7 +175,7 @@ class Noise:
     def __call__(self, img, det=None, seg=None):
         if random.random() > self.p:
             return img, det, seg
-        size = img.shape[0] * img.shape[1]
+        size = img.shape[0]
         amount = int(size * self.rate / 2 * random.random())
 
         x = np.random.randint(0, img.shape[0], amount)
