@@ -162,7 +162,7 @@ class Blur:
         rate = self.rate * random.random()
         ksize = rate * img.shape[0]
         ksize = ksize // 2
-        ksize = 2 * ksize + 1
+        ksize = int(2 * ksize + 1)
         img = cv2.blur(img, (ksize, ksize))
         return img, det, seg
 
