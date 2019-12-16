@@ -50,11 +50,9 @@ def write_2d_list(path, objs, mode='w'):
     Returns:
         bool -- 写入成功返回True
     """
-    if len(objs) == 0:
-        return False
+    objs = [' '.join([str(o) for o in obj]) for obj in objs]
     with open(path, mode) as f:
-        for obj in objs:
-            f.write(' '.join([str(o) for o in obj]) + '\n')
+        f.write('\n'.join(objs))
     return True
 
 
