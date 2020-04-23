@@ -63,7 +63,7 @@ def split_coco_image(coco_path, img_root, output, img_size, steps):
             cv2.imwrite(osp.join(save_path, iname), img)
             print(osp.join('images', iname))
             img_info = {
-                'file_name': iname,
+                'file_name': osp.join('images', iname),
                 'width': img.shape[1],
                 'height': img.shape[0],
             }

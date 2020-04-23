@@ -19,6 +19,7 @@ def sort_coco(coco):
 def insert_img_anns(coco, img_info, anns):
     for ai in range(len(anns)):
         anns[ai]['image_id'] = len(coco['images'])
+        anns[ai]['id'] = ai + len(coco['annotations'])
     img_info['id'] = len(coco['images'])
     coco['images'].append(img_info)
     coco['annotations'] += anns

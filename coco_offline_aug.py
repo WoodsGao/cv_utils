@@ -49,6 +49,10 @@ def aug_img_anns(img, anns):
         seg = p.exterior.reshape(-1).tolist()
         xs = seg[::2]
         ys = seg[1::2]
+        if len([x for x in xs if x >= img.shape[1] - 1 or x <= 0]) > 0:
+            continue
+        if len([y for y in ys if y >= img.shape[0] - 1 or y <= 0]) > 0:
+            continue
         x1 = min(xs)
         y1 = min(ys)
         w = max(xs) - x1
