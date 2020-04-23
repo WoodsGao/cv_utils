@@ -68,7 +68,7 @@ def split_coco_image(coco_path, img_root, output, img_size, steps):
                 'height': img.shape[0],
             }
             insert_img_anns(new_coco, img_info, anns)
-    save_path = osp.join(osp.dirname(coco_path), 'coco_split.json')
+    save_path = osp.join(output, 'coco_split.json')
     with open(save_path, 'w') as f:
         f.write(json.dumps(new_coco, indent=4))
 

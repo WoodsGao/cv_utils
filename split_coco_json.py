@@ -25,14 +25,12 @@ def split_coco_image(coco_path, val_ratio, shuffle):
             val_coco = insert_img_anns(val_coco, img_info, anns)
 
     train_coco = sort_coco(train_coco)
-    save_path = osp.splitext(osp.basename(coco_path))[0] + '_train.json'
-    save_path = osp.join(osp.dirname(coco_path), save_path)
+    save_path = osp.join(osp.dirname(coco_path), 'train.json')
     with open(save_path, 'w') as f:
         f.write(json.dumps(coco, indent=4, sort_keys=True))
 
     val_coco = sort_coco(val_coco)
-    save_path = osp.splitext(osp.basename(coco_path))[0] + '_val.json'
-    save_path = osp.join(osp.dirname(coco_path), save_path)
+    save_path = osp.join(osp.dirname(coco_path), 'val.json')
     with open(save_path, 'w') as f:
         f.write(json.dumps(coco, indent=4, sort_keys=True))
 
