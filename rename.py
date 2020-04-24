@@ -4,7 +4,7 @@ import time
 import argparse
 
 
-def run(data_dir):
+def rename(data_dir):
     for root, dirs, files in os.walk(data_dir):
         for i, f in enumerate(files):
             print(f)
@@ -18,4 +18,4 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('path')
     args = parser.parse_args()
-    run(args.path)
+    rename(args.path)

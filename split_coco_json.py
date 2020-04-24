@@ -4,6 +4,7 @@ import argparse
 import json
 import cv2
 import random
+from tqdm import tqdm
 from coco_utils import find_anns, create_coco, insert_img_anns, sort_coco
 
 
@@ -16,23 +17,21 @@ def split_coco_image(coco_path, val_ratio, shuffle):
     if shuffle:
         random.shuffle(coco['images'])
     img_len = len(coco['images'])
-    for img_i in range(img_len):
+    for img_i in tqdm(range(img_len)):
         img_info = coco['images'][img_i]
         anns = find_anns(coco, img_info)
-        if img_i > img_len * (1-val_ratio):
+        if img_i < img_len * (1 - val_ratio):
             train_coco = insert_img_anns(train_coco, img_info, anns)
         else:
             val_coco = insert_img_anns(val_coco, img_info, anns)
 
-    train_coco = sort_coco(train_coco)
     save_path = osp.join(osp.dirname(coco_path), 'train.json')
     with open(save_path, 'w') as f:
-        f.write(json.dumps(coco, indent=4, sort_keys=True))
+        f.write(json.dumps(train_coco, indent=4, sort_keys=True))
 
-    val_coco = sort_coco(val_coco)
     save_path = osp.join(osp.dirname(coco_path), 'val.json')
     with open(save_path, 'w') as f:
-        f.write(json.dumps(coco, indent=4, sort_keys=True))
+        f.write(json.dumps(val_coco, indent=4, sort_keys=True))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

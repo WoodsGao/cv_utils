@@ -7,7 +7,7 @@ from copy import deepcopy
 from coco_utils import find_anns, create_coco, insert_img_anns, sort_coco
 
 
-def split_img_ann(img, anns, img_size, steps):
+def crop_img_ann(img, anns, img_size, steps):
     img_array = []
     anns_array = []
     for i in range(0, img.shape[1] - img_size[0], steps[0]):
@@ -39,7 +39,7 @@ def split_img_ann(img, anns, img_size, steps):
     return img_array, anns_array
 
 
-def split_coco_image(coco_path, img_root, output, img_size, steps):
+def crop_coco_image(coco_path, img_root, output, img_size, steps):
     print(img_size)
     save_path = osp.join(output, 'images')
     os.makedirs(save_path, exist_ok=True)
@@ -57,7 +57,7 @@ def split_coco_image(coco_path, img_root, output, img_size, steps):
         img = cv2.imread(osp.join(img_root, img_info['file_name']))
         img_name = osp.splitext(osp.basename(img_info['file_name']))[0]
         anns = find_anns(coco, img_info)
-        imgs_split, anns_split = split_img_ann(img, anns, img_size, steps)
+        imgs_split, anns_split = crop_img_ann(img, anns, img_size, steps)
         for si, (img, anns) in enumerate(zip(imgs_split, anns_split)):
             iname = img_name + '_%05d.png' % si
             cv2.imwrite(osp.join(save_path, iname), img)
@@ -94,4 +94,4 @@ if __name__ == "__main__":
         steps = [int(x) for x in steps]
     else:
         steps = [img_size[0] // 2, img_size[1] // 2]
-    split_coco_image(opt.coco, opt.img_root, opt.output, img_size, steps)
+    crop_coco_image(opt.coco, opt.img_root, opt.output, img_size, steps)

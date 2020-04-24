@@ -9,28 +9,29 @@ from imgaug import augmenters as ia
 from imgaug.augmentables.polys import Polygon, PolygonsOnImage
 from coco_utils import find_anns, create_coco, insert_img_anns, sort_coco
 
-AUGS = ia.SomeOf(
-    [0, 3],
-    [
-        ia.Dropout([0.015, 0.1]),  # drop 5% or 20% of all pixels
-        ia.Sharpen((0.0, 1.0)),  # sharpen the image
-        ia.Affine(
-            scale=(0.8, 1.2),
-            translate_percent=(-0.1, 0.1),
-            rotate=(-90, 90),
-            shear=(-0.1,
-                   0.1)),  # rotate by -45 to 45 degrees (affects heatmaps)
-        # ia.ElasticTransformation(
-        # alpha=(0, 10),
-        # sigma=(0, 10)),  # apply water effect (affects heatmaps)
-        # ia.PiecewiseAffine(scale=(0, 0.03), nb_rows=(2, 6), nb_cols=(2, 6)),
-        ia.GaussianBlur((0, 3)),
-        ia.Fliplr(0.1),
-        ia.Flipud(0.1),
-        ia.LinearContrast((0.5, 1)),
-        ia.AdditiveGaussianNoise(loc=(0, 10), scale=(0, 10))
-    ],
-    random_state=True)
+AUGS = ia.Sequential([
+    ia.SomeOf(
+        [0, 3],
+        [
+            ia.Dropout([0.015, 0.1]),  # drop 5% or 20% of all pixels
+            ia.Sharpen((0.0, 1.0)),  # sharpen the image
+            # rotate by -45 to 45 degrees (affects heatmaps)
+            # ia.ElasticTransformation(
+            # alpha=(0, 10),
+            # sigma=(0, 10)),  # apply water effect (affects heatmaps)
+            # ia.PiecewiseAffine(scale=(0, 0.03), nb_rows=(2, 6), nb_cols=(2, 6)),
+            ia.GaussianBlur((0, 3)),
+            ia.Fliplr(0.1),
+            ia.Flipud(0.1),
+            ia.LinearContrast((0.5, 1)),
+            ia.AdditiveGaussianNoise(loc=(0, 10), scale=(0, 10))
+        ],
+        random_state=True),
+    ia.Affine(scale=(0.8, 1.2),
+              translate_percent=(-0.1, 0.1),
+              rotate=(-90, 90),
+              shear=(-0.1, 0.1))
+])
 
 
 def aug_img_anns(img, anns):
