@@ -25,8 +25,10 @@ def crop_coco_instance(coco_path, img_root, output):
         img_name = osp.splitext(osp.basename(img_info['file_name']))[0]
         for ai, ann in enumerate(anns):
             x1, y1, w, h = np.int32(ann['bbox'])
-            x_offset = random.randint(x1 - 5, x1 + 30)
-            y_offset = random.randint(y1 - 5, y1 + 30)
+            x_offset = max(random.randint(x1 - 30, x1 + 5), 0)
+            y_offset = max(random.randint(y1 - 30, y1 + 5), 0)
+            w = random.randint(x1 + w - 5, x1 + w + 30) - x_offset
+            h = random.randint(y1 + h - 5, y1 + h + 30) - y_offset
             cut = img[y_offset:y_offset + h, x_offset:x_offset + w]
             iname = img_name + '_%05d.png' % ai
             ann['bbox'][0] -= x_offset
