@@ -5,22 +5,24 @@ import json
 import cv2
 import random
 from tqdm import tqdm
-from coco_utils import find_anns, create_coco, insert_img_anns, sort_coco
+from coco_utils import find_all_img_anns, create_coco, insert_img_anns, sort_coco
 
 
-def split_coco_image(coco_path, val_ratio, shuffle):
+def split_coco_json(coco_path, val_ratio, shuffle):
     with open(coco_path, 'r') as f:
         coco = f.read()
     coco = json.loads(coco)
     train_coco = create_coco(coco)
     val_coco = create_coco(coco)
+
+    img_info_list, anns_list = find_all_img_anns(coco)
+    indexs = list(range(len(img_info_list)))
     if shuffle:
-        random.shuffle(coco['images'])
-    img_len = len(coco['images'])
-    for img_i in tqdm(range(img_len)):
-        img_info = coco['images'][img_i]
-        anns = find_anns(coco, img_info)
-        if img_i < img_len * (1 - val_ratio):
+        random.shuffle(indexs)
+    for ii, i in enumerate(indexs):
+        img_info = img_info_list[i]
+        anns = anns_list[i]
+        if ii < len(img_info_list) * (1 - val_ratio):
             train_coco = insert_img_anns(train_coco, img_info, anns)
         else:
             val_coco = insert_img_anns(val_coco, img_info, anns)
@@ -39,4 +41,4 @@ if __name__ == "__main__":
     parser.add_argument('-v', '--val_ratio', default=0.3, type=float)
     parser.add_argument('-s', '--shuffle', action='store_true')
     opt = parser.parse_args()
-    split_coco_image(opt.coco, opt.val_ratio, opt.shuffle)
+    split_coco_json(opt.coco, opt.val_ratio, opt.shuffle)

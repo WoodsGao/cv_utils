@@ -1,8 +1,23 @@
+from tqdm import tqdm
+
+
 def find_anns(coco, img_info):
     anns = [
         ann for ann in coco['annotations'] if ann['image_id'] == img_info['id']
     ]
     return anns
+
+
+def find_all_img_anns(coco):
+    img_id_list = []
+    anns_list = []
+    for img_info in coco['images']:
+        img_id_list.append(img_info['id'])
+        anns_list.append([])
+    for ann in tqdm(coco['annotations']):
+        index = img_id_list.index(ann['image_id'])
+        anns_list[index].append(ann)
+    return coco['images'], anns_list
 
 
 def sort_coco(coco):

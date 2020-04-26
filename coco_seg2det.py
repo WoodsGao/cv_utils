@@ -9,7 +9,7 @@ from coco_utils import find_anns, create_coco, insert_img_anns, sort_coco
 from tqdm import tqdm
 
 
-def coco_seg2det(coco_path, img_root, scale=5):
+def coco_seg2det(coco_path, img_root, steps=20):
     with open(coco_path, 'r') as f:
         coco = f.read()
     coco = json.loads(coco)
@@ -26,6 +26,7 @@ def coco_seg2det(coco_path, img_root, scale=5):
             points = ann['segmentation']
             points = np.int32(points).reshape(-1, 2)
             seg_canvas = cv2.fillPoly(seg_canvas, [points], (255, 255, 255), 0)
+            scale = int(max(img.shape[0] / steps, img.shape[1] / steps))
             down_size = (img.shape[1] // scale, img.shape[0] // scale)
             seg_canvas = cv2.resize(seg_canvas, down_size)
             for j, i in np.stack(np.where(seg_canvas == 255), 1).tolist():
@@ -54,8 +55,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--coco', type=str)
     parser.add_argument('--img-root', type=str, default='')
-    parser.add_argument('--scale', type=int, default=8)
+    parser.add_argument('--steps', type=int, default=20)
     opt = parser.parse_args()
     if not opt.img_root:
         opt.img_root = osp.dirname(opt.coco)
-    coco_seg2det(opt.coco, opt.img_root, opt.scale)
+    coco_seg2det(opt.coco, opt.img_root, opt.steps)
