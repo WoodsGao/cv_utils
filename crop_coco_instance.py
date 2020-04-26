@@ -4,6 +4,7 @@ import argparse
 import json
 import numpy as np
 import cv2
+import random
 from copy import deepcopy
 from coco_utils import find_anns, create_coco, insert_img_anns, sort_coco
 
@@ -24,13 +25,15 @@ def crop_coco_instance(coco_path, img_root, output):
         img_name = osp.splitext(osp.basename(img_info['file_name']))[0]
         for ai, ann in enumerate(anns):
             x1, y1, w, h = np.int32(ann['bbox'])
-            cut = img[y1:y1 + h, x1:x1 + w]
+            x_offset = random.randint(x1 - 5, x1 + 30)
+            y_offset = random.randint(y1 - 5, y1 + 30)
+            cut = img[y_offset:y_offset + h, x_offset:x_offset + w]
             iname = img_name + '_%05d.png' % ai
-            ann['bbox'][0] -= x1
-            ann['bbox'][1] -= y1
+            ann['bbox'][0] -= x_offset
+            ann['bbox'][1] -= y_offset
             seg = np.float32(ann['segmentation'])
-            seg[:, ::2] -= x1
-            seg[:, 1::2] -= y1
+            seg[:, ::2] -= x_offset
+            seg[:, 1::2] -= y_offset
             ann['segmentation'] = seg.tolist()
             cv2.imwrite(osp.join(save_path, iname), cut)
             print(osp.join('images', iname))
