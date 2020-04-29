@@ -104,4 +104,6 @@ if __name__ == "__main__":
     parser.add_argument('--output', type=str)
     parser.add_argument('--repeats', type=int, default=1)
     opt = parser.parse_args()
+    if not opt.img_root:
+        opt.img_root = osp.dirname(opt.coco)
     coco_offline_aug(opt.coco, opt.img_root, opt.output, opt.repeats)

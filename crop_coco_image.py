@@ -94,4 +94,6 @@ if __name__ == "__main__":
         steps = [int(x) for x in steps]
     else:
         steps = [img_size[0] // 2, img_size[1] // 2]
+    if not opt.img_root:
+        opt.img_root = osp.dirname(opt.coco)
     crop_coco_image(opt.coco, opt.img_root, opt.output, img_size, steps)
