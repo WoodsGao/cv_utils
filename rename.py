@@ -1,7 +1,7 @@
+import argparse
 import os
 import os.path as osp
 import time
-import argparse
 
 
 def rename(data_dir):

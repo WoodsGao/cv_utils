@@ -1,14 +1,17 @@
-import os
-import os.path as osp
 import argparse
 import json
-import cv2
+import os
+import os.path as osp
 import random
+
+import cv2
 from tqdm import tqdm
-from coco_utils import find_all_img_anns, create_coco, insert_img_anns, sort_coco
+
+from coco_utils import (create_coco, find_all_img_anns, insert_img_anns,
+                        sort_coco)
 
 
-def split_coco_json(coco_path, val_ratio, shuffle):
+def split_coco(coco_path, val_ratio, shuffle):
     with open(coco_path, 'r') as f:
         coco = f.read()
     coco = json.loads(coco)
@@ -37,8 +40,8 @@ def split_coco_json(coco_path, val_ratio, shuffle):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--coco', type=str)
+    parser.add_argument('coco', type=str)
     parser.add_argument('-v', '--val_ratio', default=0.3, type=float)
     parser.add_argument('-s', '--shuffle', action='store_true')
     opt = parser.parse_args()
-    split_coco_json(opt.coco, opt.val_ratio, opt.shuffle)
+    split_coco(opt.coco, opt.val_ratio, opt.shuffle)

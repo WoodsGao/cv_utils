@@ -1,10 +1,12 @@
-import os
-import os.path as osp
 import argparse
 import json
-import cv2
+import os
+import os.path as osp
 from copy import deepcopy
-from coco_utils import find_anns, create_coco, insert_img_anns, sort_coco
+
+import cv2
+
+from coco_utils import create_coco, find_anns, insert_img_anns, sort_coco
 
 
 def crop_img_ann(img, anns, img_size, steps):
@@ -75,7 +77,7 @@ def crop_coco_image(coco_path, img_root, output, img_size, steps):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--coco', type=str)
+    parser.add_argument('coco', type=str)
     parser.add_argument('--img-root', type=str)
     parser.add_argument('--output', type=str)
     parser.add_argument('--img-size', default='1000', type=str)

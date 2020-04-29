@@ -1,12 +1,14 @@
-import os
-import os.path as osp
 import argparse
 import json
-import numpy as np
-import cv2
+import os
+import os.path as osp
 import random
 from copy import deepcopy
-from coco_utils import find_anns, create_coco, insert_img_anns, sort_coco
+
+import cv2
+import numpy as np
+
+from coco_utils import create_coco, find_anns, insert_img_anns, sort_coco
 
 
 def crop_coco_instance(coco_path, img_root, output):

@@ -1,8 +1,9 @@
+import argparse
 import os
 import os.path as osp
+
 import cv2
 from tqdm import tqdm
-import argparse
 
 
 def img2video(img_dir, fps, img_size):

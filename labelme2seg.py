@@ -1,8 +1,9 @@
+import argparse
 import os
 import os.path as osp
-import cv2
 import shutil
-import argparse
+
+import cv2
 from tqdm import tqdm
 
 

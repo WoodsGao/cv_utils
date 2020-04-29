@@ -1,6 +1,7 @@
-import os
-import cv2
 import argparse
+import os
+
+import cv2
 
 
 def draw_bin_seg(img, seg, dst):

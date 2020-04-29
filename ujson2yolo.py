@@ -1,9 +1,10 @@
 # coding=utf-8
+import argparse
+import json
 import os
 import os.path as osp
 import shutil
-import json
-import argparse
+
 import cv2
 from tqdm import tqdm
 
@@ -89,4 +90,3 @@ if __name__ == '__main__':
     parser.add_argument('--lines', action='store_true')
     opt = parser.parse_args()
     ujson2yolo(opt.ann, opt.cls, opt.dst, opt.lines)
-

@@ -1,9 +1,11 @@
-import cv2
-import numpy as np
+import argparse
+import json
 import os
 import os.path as osp
-import json
-import argparse
+
+import cv2
+import numpy as np
+
 from coco_utils import create_coco, insert_img_anns
 
 
