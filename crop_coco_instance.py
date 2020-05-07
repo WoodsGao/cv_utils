@@ -8,7 +8,7 @@ from copy import deepcopy
 import cv2
 import numpy as np
 
-from coco_utils import create_coco, find_anns, insert_img_anns, sort_coco
+from coco_utils import create_coco, find_all_img_anns, insert_img_anns, sort_coco
 
 
 def crop_coco_instance(coco_path, img_root, output):
@@ -18,8 +18,8 @@ def crop_coco_instance(coco_path, img_root, output):
         coco = f.read()
     coco = json.loads(coco)
     new_coco = create_coco(coco)
-    for img_info in coco['images']:
-        anns = find_anns(coco, img_info)
+    img_info_list, anns_list = find_all_img_anns(coco)
+    for img_info, anns in zip(img_info_list, anns_list):
         if len(anns) == 0:
             continue
         print(osp.join(img_root, img_info['file_name']))
