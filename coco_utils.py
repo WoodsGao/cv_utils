@@ -49,7 +49,7 @@ def create_coco(categories_coco=None):
         coco['categories'] = []
         for i in range(81):
             coco['categories'].append({
-                'name': str(i),
+                'name': None,
                 'supercategory': str(i),
                 'id': i
             })

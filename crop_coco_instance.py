@@ -26,18 +26,23 @@ def crop_coco_instance(coco_path, img_root, output):
         img = cv2.imread(osp.join(img_root, img_info['file_name']))
         img_name = osp.splitext(osp.basename(img_info['file_name']))[0]
         for ai, ann in enumerate(anns):
-            x1, y1, w, h = np.int32(ann['bbox'])
-            x_offset = max(random.randint(x1 - 50, x1 - 50), 0)
-            y_offset = max(random.randint(y1 - 50, y1 - 50), 0)
-            w = random.randint(x1 + w + 50, x1 + w + 50) - x_offset
-            h = random.randint(y1 + h + 50, y1 + h + 50) - y_offset
-            cut = img[y_offset:y_offset + h, x_offset:x_offset + w]
             iname = img_name + '_%05d.png' % ai
-            ann['bbox'][0] -= x_offset
-            ann['bbox'][1] -= y_offset
             seg = np.float32(ann['segmentation'])
-            seg[:, ::2] -= x_offset
-            seg[:, 1::2] -= y_offset
+            p = seg.reshape(-1, 2).transpose(1, 0).astype(np.int32)
+            x1 = p[0].min()
+            x2 = p[0].max()
+            y1 = p[1].min()
+            y2 = p[1].max()
+            x1_ = max(random.randint(x1 - 50, x1 - 10), 0)
+            y1_ = max(random.randint(y1 - 50, y1 - 10), 0)
+            x2_ = min(random.randint(x2 + 10, x2 + 50), img.shape[1])
+            y2_ = min(random.randint(y2 + 10, y2 + 50), img.shape[0])
+            cut = img[y1_:y2_, x1_:x2_]
+            seg[:, ::2] -= x1_
+            seg[:, 1::2] -= y1_
+            p = seg.reshape(-1, 2).transpose(1, 0)
+            ann['bbox'] = np.array([x1 - x1_, y1 - y1_, x2 - x1,
+                                    y2 - y1]).tolist()
             ann['segmentation'] = seg.tolist()
             cv2.imwrite(osp.join(save_path, iname), cut)
             print(osp.join('images', iname))

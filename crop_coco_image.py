@@ -14,6 +14,8 @@ def crop_img_ann(img, anns, img_size, steps):
     anns_array = []
     for i in range(0, img.shape[1] - img_size[0], steps[0]):
         for j in range(0, img.shape[0] - img_size[1], steps[1]):
+            if img[j:j + img_size[1], i:i + img_size[0]].sum() == 0:
+                continue
             img_array.append(img[j:j + img_size[1], i:i + img_size[0]])
             new_anns = []
             for ann in anns:

@@ -8,7 +8,7 @@ import numpy as np
 
 from coco_utils import create_coco, insert_img_anns
 
-POINTS_WH = 20
+POINTS_WH = 0
 
 
 def labelme2coco(path, img_root=''):
@@ -16,12 +16,17 @@ def labelme2coco(path, img_root=''):
         img_root = path
     coco = create_coco()
     categories = []
-    for data in os.listdir(path):
+    files = [f for f in os.listdir(path) if osp.splitext(f)[-1] == '.json']
+    for data in files:
         with open(osp.join(path, data), 'r') as f:
             data = json.loads(f.read())
         img = cv2.imread(osp.join(img_root, data['imagePath']))
         ih, iw, ic = img.shape
-        img_info = {'file_name': data['imagePath'], 'width': iw, 'height': ih}
+        img_info = {
+            'file_name': 'images/' + data['imagePath'],
+            'width': iw,
+            'height': ih
+        }
         anns = []
         for shapes in data['shapes']:
             label = shapes['label']
@@ -62,6 +67,7 @@ def labelme2coco(path, img_root=''):
                     'segmentation': [[x1, y1, x1, y2, x2, y2, x2, y1]]
                 })
         coco = insert_img_anns(coco, img_info, anns)
+    coco['categories'] = [c for c in coco['categories'] if c['name'] is not None]
     save_path = osp.join(osp.dirname(path), '../coco.json')
     with open(save_path, 'w') as f:
         f.write(json.dumps(coco, indent=4))

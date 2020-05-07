@@ -18,6 +18,7 @@ def yolo2coco(img_root):
         for ci in range(len(coco['categories'])):
             if ci < len(classes):
                 coco['categories'][ci]['name'] = classes[ci]
+    coco['categories'] = [c for c in coco['categories'] if c['name'] is not None]
     img_list = os.listdir(osp.join(img_root, 'images'))
     for img in img_list:
         ih, iw, _ = cv2.imread(osp.join(img_root, 'images', img)).shape
