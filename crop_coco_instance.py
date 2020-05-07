@@ -40,7 +40,6 @@ def crop_coco_instance(coco_path, img_root, output):
             cut = img[y1_:y2_, x1_:x2_]
             seg[:, ::2] -= x1_
             seg[:, 1::2] -= y1_
-            p = seg.reshape(-1, 2).transpose(1, 0)
             ann['bbox'] = np.array([x1 - x1_, y1 - y1_, x2 - x1,
                                     y2 - y1]).tolist()
             ann['segmentation'] = seg.tolist()
