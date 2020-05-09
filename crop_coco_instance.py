@@ -12,7 +12,7 @@ import numpy as np
 from coco_utils import create_coco, find_all_img_anns, insert_img_anns, sort_coco
 
 
-def crop_coco_instance(coco_path, img_root, output):
+def crop_coco_instance(coco_path, img_root, output, square=False):
     save_path = osp.join(output, 'images')
     os.makedirs(save_path, exist_ok=True)
     with open(coco_path, 'r') as f:
@@ -34,6 +34,14 @@ def crop_coco_instance(coco_path, img_root, output):
             x2 = p[0].max()
             y1 = p[1].min()
             y2 = p[1].max()
+            # square crop - it may be better for segmentation
+            if square:
+                center = ((x1 + x2) // 2, (y1 + y2) // 2)
+                r = max(x2 - x1, y2 - y1) // 2
+                x1 = center[0] - r
+                x2 = center[0] + r
+                y1 = center[1] - r
+                y2 = center[1] + r
             x1_ = max(random.randint(x1 - 50, x1 - 10), 0)
             y1_ = max(random.randint(y1 - 50, y1 - 10), 0)
             x2_ = min(random.randint(x2 + 10, x2 + 50), img.shape[1])
@@ -62,7 +70,8 @@ if __name__ == "__main__":
     parser.add_argument('coco', type=str)
     parser.add_argument('--img-root', type=str, default='')
     parser.add_argument('--output', type=str)
+    parser.add_argument('-s', '--square', action='store_true')
     opt = parser.parse_args()
     if not opt.img_root:
         opt.img_root = osp.dirname(opt.coco)
-    crop_coco_instance(opt.coco, opt.img_root, opt.output)
+    crop_coco_instance(opt.coco, opt.img_root, opt.output, opt.square)

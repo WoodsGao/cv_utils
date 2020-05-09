@@ -39,6 +39,7 @@ def split_coco(coco_path, val_ratio, shuffle):
     with open(save_path, 'w') as f:
         f.write(json.dumps(val_coco, indent=4, sort_keys=True))
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('coco', type=str)
