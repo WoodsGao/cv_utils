@@ -103,8 +103,8 @@ def coco_offline_aug(coco_path, img_root, output, repeats=1):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('coco', type=str)
+    parser.add_argument('output', type=str)
     parser.add_argument('--img-root', type=str)
-    parser.add_argument('--output', type=str)
     parser.add_argument('--repeats', type=int, default=1)
     opt = parser.parse_args()
     if not opt.img_root:

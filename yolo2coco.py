@@ -60,6 +60,6 @@ def yolo2coco(img_root):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--img-root', type=str)
+    parser.add_argument('img-root', type=str)
     opt = parser.parse_args()
     yolo2coco(opt.img_root)

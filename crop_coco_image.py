@@ -81,8 +81,8 @@ def crop_coco_image(coco_path, img_root, output, img_size, steps):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('coco', type=str)
+    parser.add_argument('output', type=str)
     parser.add_argument('--img-root', type=str)
-    parser.add_argument('--output', type=str)
     parser.add_argument('--img-size', default='1000', type=str)
     parser.add_argument('--steps', default='', type=str)
     opt = parser.parse_args()

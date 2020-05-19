@@ -41,8 +41,8 @@ def show_coco(coco_path, img_root, output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('coco', type=str)
+    parser.add_argument('output', type=str)
     parser.add_argument('--img-root', type=str, default='')
-    parser.add_argument('--output', type=str)
     opt = parser.parse_args()
     if not opt.img_root:
         opt.img_root = osp.dirname(opt.coco)

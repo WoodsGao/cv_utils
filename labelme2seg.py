@@ -31,7 +31,7 @@ def labelme2seg(src_dir, dst_dir):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--src', type=str, help='src file path')
-    parser.add_argument('--dst', type=str, help='dst file path')
+    parser.add_argument('src', type=str, help='src file path')
+    parser.add_argument('dst', type=str, help='dst file path')
     opt = parser.parse_args()
     labelme2seg(opt.src, opt.dst)

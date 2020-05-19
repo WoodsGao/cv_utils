@@ -68,8 +68,8 @@ def crop_coco_instance(coco_path, img_root, output, square=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('coco', type=str)
+    parser.add_argument('output', type=str)
     parser.add_argument('--img-root', type=str, default='')
-    parser.add_argument('--output', type=str)
     parser.add_argument('-s', '--square', action='store_true')
     opt = parser.parse_args()
     if not opt.img_root:

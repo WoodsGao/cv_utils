@@ -34,7 +34,7 @@ def video2img(video_path, ratio=0.):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--video', type=str)
+    parser.add_argument('video', type=str)
     parser.add_argument('--ratio', type=float, default=0.)
     opt = parser.parse_args()
     video2img(opt.video, opt.ratio)
