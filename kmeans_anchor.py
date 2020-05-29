@@ -41,7 +41,7 @@ def kmeans_anchor(coco_path, n_clusters, img_size):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--coco', type=str)
+    parser.add_argument('coco', type=str)
     parser.add_argument('-n', type=int, default=9)
     parser.add_argument('-s', '--img-size', type=str, default='416')
     opt = parser.parse_args()
