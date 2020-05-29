@@ -22,7 +22,7 @@ def labelme2coco(path, img_root='images'):
         with open(osp.join(path, data), 'r') as f:
             data = json.loads(f.read())
         img_info = {
-            'file_name': osp.join(img_root, data['imagePath']),
+            'file_name': osp.relpath(osp.abspath(osp.join(img_root, data['imagePath'])), './'),
             'width': data['imageWidth'],
             'height': data['imageHeight']
         }
