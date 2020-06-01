@@ -35,7 +35,7 @@ def coco2labelme(coco_path, outputs):
             shape = copy.deepcopy(DEFAULT_SHAPE)
             points = ann['segmentation'][0]
             points = list(zip(points[::2], points[1::2]))
-            label = coco['categories'][ann['category_id']]
+            label = coco['categories'][ann['category_id']]['name']
             if len(points) == 1:
                 shape_type = 'point'
             elif len(points) == 2:
