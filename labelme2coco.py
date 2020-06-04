@@ -63,7 +63,8 @@ def labelme2coco(path, img_root='images'):
                     'bbox': [x1, y1, w, h],
                     'category_id': cid,
                     'iscrowd': 0,
-                    'segmentation': [[x1, y1, x1, y2, x2, y2, x2, y1]]
+                    # 'segmentation': [[x1, y1, x1, y2, x2, y2, x2, y1]]
+                    'segmentation': [[x, y]]
                 })
         coco = insert_img_anns(coco, img_info, anns)
     coco['categories'] = [c for c in coco['categories'] if c['name'] is not None]
