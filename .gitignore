@@ -8,6 +8,10 @@ __pycache__/
 
 .vscode
 
+*.cache
+*.trt
+*.onnx
+
 # Distribution / packaging
 .Python
 build/

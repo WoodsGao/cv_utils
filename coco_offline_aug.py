@@ -9,6 +9,7 @@ import cv2
 import numpy as np
 from imgaug import augmenters as ia
 from imgaug.augmentables.polys import Polygon, PolygonsOnImage
+from imgaug.augmentables.kps import Keypoint, KeypointsOnImage
 
 from coco_utils import create_coco, find_anns, insert_img_anns, sort_coco
 
@@ -40,16 +41,31 @@ AUGS = ia.Sequential([
 def aug_img_anns(img, anns):
     augments = AUGS.to_deterministic()
     polygons = []
+    kps = []
     for ann in anns:
         polygons.append(
             Polygon(
                 np.float32(ann['segmentation'][0]).reshape(-1, 2),
                 ann['category_id']))
+        if ann.get('keypoints'):
+            for ki in range(ann['num_keypoints']):
+                kps.append(
+                    Polygon([[
+                        ann['keypoints'][ki * 3], ann['keypoints'][ki * 3 + 1]
+                    ]],
+                            label=(ki, len(polygons) - 1,
+                                   ann['keypoints'][ki * 3 + 2])))
     polygons = PolygonsOnImage(polygons, img.shape)
+    kps = PolygonsOnImage(kps, img.shape)
     img = augments.augment_image(img)
     polygons = augments.augment_polygons(polygons).polygons
+    kps = augments.augment_polygons(kps).polygons
+    kps_on_instance = [[] for i in range(len(polygons))]
+    for kp in kps:
+        kps_on_instance[kp.label[1]].append(kp)
+    map(lambda x: x.sort(key=lambda kp: kp.label[0]), kps_on_instance)
     anns = []
-    for p in polygons:
+    for p, kps in zip(polygons, kps_on_instance):
         seg = p.exterior.reshape(-1).tolist()
         xs = seg[::2]
         ys = seg[1::2]
@@ -68,6 +84,14 @@ def aug_img_anns(img, anns):
             'iscrowd': 0,
             'segmentation': [seg]
         })
+        if len(kps):
+            anns[-1]['keypoints'] = []
+            anns[-1]['num_keypoints'] = len(kps)
+            for kp in kps:
+                anns[-1]['keypoints'].append(float(kp.exterior[0][0]))
+                anns[-1]['keypoints'].append(float(kp.exterior[0][1]))
+                anns[-1]['keypoints'].append(kp.label[2])
+                
     return img, anns
 
 

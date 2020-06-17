@@ -43,13 +43,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('coco', type=str)
     parser.add_argument('-n', type=int, default=9)
-    parser.add_argument('-s', '--img-size', type=str, default='416')
+    parser.add_argument('-s', '--img-size', type=int, nargs=2, default=[416, 416])
     opt = parser.parse_args()
     print(opt)
-    img_size = opt.img_size.split(',')
-    assert len(img_size) in [1, 2]
-    if len(img_size) == 1:
-        img_size = [int(img_size[0])] * 2
-    else:
-        img_size = [int(x) for x in img_size]
-    kmeans_anchor(opt.coco, opt.n, img_size)
+    kmeans_anchor(opt.coco, opt.n, opt.img_size)

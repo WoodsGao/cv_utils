@@ -22,13 +22,15 @@ def crop_img_ann(img, anns, img_size, steps):
             for ann in anns:
                 xs = ann['segmentation'][0][::2]
                 ys = ann['segmentation'][0][1::2]
-                if len([x for x in xs if x >= i + img_size[0] - 1 or x <= i
-                        ]) > 0:
+                if any([x >= i + img_size[0] - 1 or x <= i for x in xs]):
                     continue
-                if len([y for y in ys if y >= j + img_size[1] - 1 or y <= j
-                        ]) > 0:
+                if any([y >= j + img_size[1] - 1 or y <= j for y in ys]):
                     continue
                 ann = deepcopy(ann)
+                if ann.get('keypoints'):
+                    for ki in range(ann['num_keypoints']):
+                        ann['keypoints'][ki * 3] -= i
+                        ann['keypoints'][ki * 3 + 1] -= j
                 for si in range(0, len(ann['segmentation'][0]), 2):
                     ann['segmentation'][0][si] -= i
                     ann['segmentation'][0][si + 1] -= j
@@ -39,6 +41,7 @@ def crop_img_ann(img, anns, img_size, steps):
                 w = max(xs) - xmin
                 h = max(ys) - ymin
                 ann['bbox'] = [xmin, ymin, w, h]
+
                 new_anns.append(ann)
             anns_array.append(new_anns)
     return img_array, anns_array
@@ -83,22 +86,9 @@ if __name__ == "__main__":
     parser.add_argument('coco', type=str)
     parser.add_argument('output', type=str)
     parser.add_argument('--img-root', type=str)
-    parser.add_argument('--img-size', default='1000', type=str)
-    parser.add_argument('--steps', default='', type=str)
+    parser.add_argument('--img-size', default=[1000, 1000], type=int, nargs=2)
+    parser.add_argument('--steps', default=[500, 500], type=int, nargs=2)
     opt = parser.parse_args()
-    img_size = opt.img_size.split(',')
-    assert len(img_size) in [1, 2]
-    if len(img_size) == 1:
-        img_size = [int(img_size[0])] * 2
-    else:
-        img_size = [int(x) for x in img_size]
-    steps = opt.steps.split(',') if opt.steps else []
-    if len(steps) == 1:
-        steps = [int(steps[0])] * 2
-    elif len(steps) == 2:
-        steps = [int(x) for x in steps]
-    else:
-        steps = [img_size[0] // 2, img_size[1] // 2]
     if not opt.img_root:
         opt.img_root = osp.dirname(opt.coco)
     crop_coco_image(opt.coco, opt.img_root, opt.output, img_size, steps)
